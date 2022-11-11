@@ -31,10 +31,10 @@ namespace Lesson4
         {
             modelBuilder.Entity<Clients>().HasKey(x => x.id);
             modelBuilder.Entity<Orders>().HasKey(x => new { x.idOrder, x.id });
-            modelBuilder.Entity<Products>().HasKey(x => x.Id);
+            modelBuilder.Entity<Products>().HasKey(x => x.id);
 
             modelBuilder.Entity<Orders>().HasOne(x => x.clients).WithMany().HasForeignKey(x => x.clientId).HasPrincipalKey(x => x.id);
-            modelBuilder.Entity<Orders>().HasOne(x => x.product).WithMany().HasForeignKey(x => x.productId).HasPrincipalKey(x => x.Id);
+            modelBuilder.Entity<Orders>().HasOne(x => x.product).WithMany().HasForeignKey(x => x.productId).HasPrincipalKey(x => x.id);
         }
     }
 }

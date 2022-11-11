@@ -21,29 +21,13 @@ using (var conn = new SqlConnection(connectionString))
 
 using (AppDBContext context = new AppDBContext(connectionString))
 {
-    context.clients.Add(new Clients()
-        {
-            id = 1,
-            firstName = "Ivanov"
-        });
-
-    context.clients.Add(new Clients()
-        {
-            id = 2,
-            firstName = "Petrov"
-        });
-
-    context.clients.Add(new Clients()
-        {
-            id = 3,
-            firstName = "Belov"
-        });
-
-    context.clients.Add(new Clients()
-        {
-            id = 4,
-            firstName = "Smirnov"
-        });
-
-
+    var i = 1;
+    context.clients.Add(new Clients(i++, "Ivanov"));
+    context.clients.Add(new Clients(i++, "Petrov"));
+    context.clients.Add(new Clients(i++, "Belov"));
+    context.clients.Add(new Clients(i++, "Smirnov"));
+    context.clients.Add(new Clients(i++, "Temnov"));
+    
+    
+    context.SaveChanges();
 }
