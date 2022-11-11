@@ -1,2 +1,2 @@
 # OtusCurse
-Купсы  Otus
+Курсы  Otus
