@@ -10,7 +10,7 @@ namespace Lesson4
     {
         public int idOrder { get; set; }
         public int id { get; set; }
-        public DateTime dateTime { get; set; }
+        public DateTime orderDateTime { get; set; }
 
         public  int clientId { get; set; }
         public Clients clients { get; set; }

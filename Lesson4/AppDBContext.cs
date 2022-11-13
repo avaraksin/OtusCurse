@@ -23,7 +23,6 @@ namespace Lesson4
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
             optionsBuilder.UseSqlServer(_dbConnectionString);
         }
 
