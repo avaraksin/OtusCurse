@@ -9,7 +9,7 @@ namespace Lesson4
 {
     public class AppDBContext : DbContext
     {
-        private string _dbConnectionString;
+        private readonly string _dbConnectionString;
         
         public DbSet<Clients> clients { get; set; }
         public DbSet<Orders> orders { get; set; }

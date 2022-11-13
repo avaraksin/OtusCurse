@@ -1,4 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Lesson4
 {
     public class InitialDbSet
     {
-        private string _connetionString;
+        private readonly string _connetionString;
 
         public InitialDbSet(string connetionString)
         {
@@ -54,15 +55,27 @@ namespace Lesson4
             {
                 if (context.clients.Count() > 0)
                 {
-                    context.clients.RemoveRange();
+                    var clients = context.clients.ToList();
+                    foreach (var client in clients)
+                    {
+                        context.clients.Remove(client);
+                    }
                 }
                 if (context.products.Count() > 0)
                 {
-                    context.products.RemoveRange();
+                    var products = context.products.ToList();
+                    foreach (var product in products)
+                    {
+                        context.products.Remove(product);
+                    }
                 }
                 if (context.orders.Count() > 0)
                 {
-                    context.orders.RemoveRange();
+                    var orders = context.orders.ToList();
+                    foreach (var order in orders)
+                    {
+                        context.orders.Remove(order);
+                    }
                 }
                 context.SaveChanges();
 

@@ -5,6 +5,11 @@
       "ProjectGuid": "b30f1ef4-26a7-452f-b7c9-b02bff11ef1a",
       "DisplayName": "Lesson4",
       "ColorIndex": 0
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Прочие файлы",
+      "ColorIndex": -1
     }
   },
   "NextColorIndex": 1
