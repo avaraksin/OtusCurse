@@ -1,15 +1,15 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lesson4
 {
+    /// <summary>
+    /// Первоначальная обработка данных
+    /// </summary>
     public class InitialDbSet
     {
+        /// <summary>
+        /// Строка соединения с БД
+        /// </summary>
         private readonly string _connetionString;
 
         public InitialDbSet(string connetionString)
@@ -17,6 +17,13 @@ namespace Lesson4
             _connetionString = connetionString;
         }
 
+
+
+        /// <summary>
+        /// Создает в БД таблицы, если они не существуют. Асинхронный метод.
+        /// Используются SQL-запросы
+        /// </summary>
+        /// <returns></returns>
         public Task CreateTables()
         {
             using (var conn = new SqlConnection(_connetionString))
@@ -49,50 +56,39 @@ namespace Lesson4
             return Task.CompletedTask;
         }
 
+
+
+        /// <summary>
+        /// Первоначальное наполнение таблиц, если они - пустые.
+        /// Используется EF
+        /// </summary>
+        /// <returns></returns>
         public Task InitialFillTables()
         {
-            using (AppDBContext context = new AppDBContext(_connetionString))
-            {
-                if (context.clients.Count() > 0)
-                {
-                    var clients = context.clients.ToList();
-                    foreach (var client in clients)
-                    {
-                        context.clients.Remove(client);
-                    }
-                }
-                if (context.products.Count() > 0)
-                {
-                    var products = context.products.ToList();
-                    foreach (var product in products)
-                    {
-                        context.products.Remove(product);
-                    }
-                }
-                if (context.orders.Count() > 0)
-                {
-                    var orders = context.orders.ToList();
-                    foreach (var order in orders)
-                    {
-                        context.orders.Remove(order);
-                    }
-                }
-                context.SaveChanges();
+            using AppDBContext context = new AppDBContext(_connetionString);
 
-                var i = 1;
+            var i = 1;
+            if (context.clients.Count() == 0)
+            {
                 context.clients.Add(new Clients(i++, "Ivanov"));
                 context.clients.Add(new Clients(i++, "Petrov"));
                 context.clients.Add(new Clients(i++, "Belov"));
                 context.clients.Add(new Clients(i++, "Smirnov"));
                 context.clients.Add(new Clients(i++, "Temnov"));
+            }
 
+            if (context.products.Count() == 0)
+            {
                 i = 1;
                 context.products.Add(new Products(i++, "Шоколад"));
                 context.products.Add(new Products(i++, "Конфеты"));
                 context.products.Add(new Products(i++, "Печенье"));
                 context.products.Add(new Products(i++, "Халва"));
                 context.products.Add(new Products(i++, "Сок"));
+            }
 
+            if (context.orders.Count() == 0)
+            {
                 context.orders.Add(new Orders()
                 {
                     idOrder = 1,
@@ -137,10 +133,46 @@ namespace Lesson4
                     productId = 5,
                     orderDateTime = DateTime.Now
                 });
-
-                context.SaveChanges();
             }
+
+            context.SaveChanges();
+            
             return Task.CompletedTask;
+        }
+
+        
+        /// <summary>
+        /// Очистка таблиц.
+        /// </summary>
+        public void ClearTables()
+        {
+            using AppDBContext context = new AppDBContext(_connetionString);
+
+            if (context.clients.Count() > 0)
+            {
+                var clients = context.clients.ToList();
+                foreach (var client in clients)
+                {
+                    context.clients.Remove(client);
+                }
+            }
+            if (context.products.Count() > 0)
+            {
+                var products = context.products.ToList();
+                foreach (var product in products)
+                {
+                    context.products.Remove(product);
+                }
+            }
+            if (context.orders.Count() > 0)
+            {
+                var orders = context.orders.ToList();
+                foreach (var order in orders)
+                {
+                    context.orders.Remove(order);
+                }
+            }
+            context.SaveChanges();
         }
     }
 }

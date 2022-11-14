@@ -1,26 +1,34 @@
-﻿using Microsoft.Data.SqlClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Lesson4
 {
+    /// <summary>
+    /// Набор методов для вывода таблиц на экран (в  консоль)
+    /// </summary>
     public class PrintTables
     {
+        /// <summary>
+        /// Строка соединения с БД
+        /// </summary>
         private readonly string _connectionString;
+
+
 
         public PrintTables(string connectionString)
         {
             _connectionString = connectionString;
         }
 
+
+
+        /// <summary>
+        /// Вывод в в консоль таблицы Clients (Клиенты)
+        /// </summary>
         public void PrintClients()
         {
             using (AppDBContext context = new AppDBContext(_connectionString))
             {
+                // Если таблица пустая - выводим соответствующее сообщение.
                 if (context.clients.Count() == 0)
                 {
                     Console.WriteLine("Таблица Clients пустая!");
@@ -38,6 +46,11 @@ namespace Lesson4
             }
         }
 
+
+
+        /// <summary>
+        /// Вывод в в консоль таблицы Products (Продукты)
+        /// </summary>
         public void PrintProducts()
         {
             using (AppDBContext context = new AppDBContext(_connectionString))
@@ -59,6 +72,11 @@ namespace Lesson4
             }
         }
 
+
+
+        /// <summary>
+        /// Вывод в консоль таблицы Orders (Заказы)
+        /// </summary>
         public void PrintOrders()
         {
             using (AppDBContext context = new AppDBContext(_connectionString))
@@ -72,10 +90,10 @@ namespace Lesson4
                 var result = context.orders.Include(x => x.product).Include(x => x.clients).ToList();
 
                 Console.WriteLine("Orders");
-                Console.WriteLine($"№№\tId заказа\tКлиент\t\tID в заказе\tПродукт");
+                Console.WriteLine($"№№\tId заказа\tКлиент\t\tID в заказе\tПродукт\t\tДата заказа");
                 for (var i = 0; i < result.Count(); i++)
                 {
-                    Console.WriteLine($"{i + 1}\t{result[i].idOrder}\t\t{result[i].clients.firstName}\t\t{result[i].id}\t\t{result[i].product.productName}");
+                    Console.WriteLine($"{i + 1}\t{result[i].idOrder}\t\t{result[i].clients.firstName}\t\t{result[i].id}\t\t{result[i].product.productName}\t\t{result[i].orderDateTime.ToString("dd.MM.yyyy")}");
                 }
 
             }

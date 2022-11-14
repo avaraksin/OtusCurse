@@ -112,5 +112,5 @@ C:\C#\Otus\Course\Lesson4\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System
 C:\C#\Otus\Course\Lesson4\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Runtime.Caching.dll
 C:\C#\Otus\Course\Lesson4\bin\Debug\net6.0\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
 C:\C#\Otus\Course\Lesson4\bin\Debug\net6.0\runtimes\win\lib\netcoreapp3.0\System.Windows.Extensions.dll
-C:\C#\Otus\Course\Lesson4\obj\Debug\net6.0\Lesson4.csproj.AssemblyReference.cache
 C:\C#\Otus\Course\Lesson4\obj\Debug\net6.0\Lesson4.csproj.CopyComplete
+C:\C#\Otus\Course\Lesson4\obj\Debug\net6.0\Lesson4.csproj.AssemblyReference.cache

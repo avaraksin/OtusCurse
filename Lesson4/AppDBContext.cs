@@ -1,19 +1,24 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lesson4
 {
+    /// <summary>
+    /// Контекст БД для работы через EF
+    /// </summary>
     public class AppDBContext : DbContext
     {
+        /// <summary>
+        /// Строка соединения с БД
+        /// </summary>
         private readonly string _dbConnectionString;
         
+        /// <summary>
+        /// Образ таблиц БД
+        /// </summary>
         public DbSet<Clients> clients { get; set; }
         public DbSet<Orders> orders { get; set; }
         public DbSet<Products> products { get; set; }
+
 
         public AppDBContext(string connectionstring)
         {
@@ -21,11 +26,21 @@ namespace Lesson4
         }
 
         
+        /// <summary>
+        /// Регистрируем контекст MS SQL Server
+        /// </summary>
+        /// <param name="optionsBuilder"></param>
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(_dbConnectionString);
         }
 
+
+
+        /// <summary>
+        /// Задаем первичные и вторичные ключи
+        /// </summary>
+        /// <param name="modelBuilder"></param>
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Clients>().HasKey(x => x.id);
