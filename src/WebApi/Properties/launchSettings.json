@@ -1,7 +1,7 @@
 ﻿{
   "iisSettings": {
     "windowsAuthentication": false,
-    "anonymousAuthentication": true
+    "anonymousAuthentication": false
   },
   "profiles": {
     "WebApi": {

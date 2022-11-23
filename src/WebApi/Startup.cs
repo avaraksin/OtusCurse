@@ -1,3 +1,11 @@
+global using  Microsoft.EntityFrameworkCore;
+global using System.Collections.Generic;
+global using System.Threading.Tasks;
+global using System.Linq;
+
+global using WebApi.Models;
+global using WebApi.Repository;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +20,15 @@ namespace WebApi
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
+        private string ConnectionString = "Data Source=91.219.6.251\\SQLEXPRESS; Initial Catalog=Otus; User Id=otuslogin; Password=1234";
+        
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContextFactory<AppFactory>(
+                options => options.UseSqlServer(ConnectionString));
+            
+            services.AddScoped(typeof(IRepository<>), typeof(RepoEF<>));
+            
             services.AddControllers();
             services.AddSwaggerGen();
         }

@@ -7,7 +7,8 @@ namespace WebClient
     {
         static Task Main(string[] args)
         {
-            throw new NotImplementedException();
+            Console.ReadKey();
+            return Task.CompletedTask;
         }
 
         private static CustomerCreateRequest RandomCustomer()
