@@ -62,7 +62,7 @@
         /// </summary>
         /// <param name="entity">Образ записи</param>
         /// <returns></returns>
-        public async Task Update(T entity)
+        public async Task<bool> Update(T entity)
         {
             var existEntity = _appFactory.Set<T>().FirstOrDefaultAsync(x => x.id == entity.id).Result;
             if(existEntity != null)
@@ -70,8 +70,9 @@
                 _appFactory.Set<T>().Remove(existEntity);
                 _appFactory.Set<T>().Add(entity);
                 await _appFactory.SaveChangesAsync();
+                return true;
             }
-
+            return false;
         }
 
 
@@ -80,14 +81,16 @@
         /// </summary>
         /// <param name="id">id для удаления</param>
         /// <returns></returns>
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var existEntity = _appFactory.Set<T>().FirstOrDefaultAsync(x => x.id == id).Result;
             if (existEntity != null)
             {
                 _appFactory.Set<T>().Remove(existEntity);
                 await _appFactory.SaveChangesAsync();
+                return true;
             }
+            return false;
         }
     }
 }

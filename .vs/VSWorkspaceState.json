@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\src",
+    "\\src\\WebApi"
   ],
-  "SelectedNode": "\\DotnetDev.Homework.7.sln",
+  "SelectedNode": "\\src\\WebApi\\Program.cs",
   "PreviewInSolutionExplorer": false
 }

@@ -7,7 +7,8 @@ namespace WebApi.Controllers
     [Route("users")]
 
 /// <summary>
-/// Контроллер. Реализует 2 ручки: Запрос пользователя по id и добавление нового пользователя
+/// Контроллер. Реализует 2 ручки из ДЗ: Запрос пользователя по id и добавление нового пользователя
+/// + 3 ручки для проверки методов RepoEF (GetAll, Update & Delete)
 /// </summary>
     public class Controllers : Microsoft.AspNetCore.Mvc.Controller
     {
@@ -54,6 +55,59 @@ namespace WebApi.Controllers
                 return Conflict();
             }
             return Ok(user);
+        }
+
+
+
+        /// <summary>
+        /// Получить список всех клиентов
+        /// </summary>
+        /// <param name="id">id пользователя</param>
+        /// <returns></returns>
+        [HttpGet]   
+        public async Task<IEnumerable<User>> GetAllAsync()
+        {
+            return await _repo.Get();
+        }
+
+        /// <summary>
+        /// Обновить клиента в  БД
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>
+        /// true - если такая запись существует. 
+        /// false - если нет.
+        /// </returns>
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserAsync([FromBody]  User user)
+        {
+            var result = await _repo.Update(user);
+            if (result == false)
+            {
+                return NotFound();
+            }
+            return Ok(user);
+        }
+
+
+
+        /// <summary>
+        /// Удалить запись по id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>
+        /// true - если такая запись существует. 
+        /// false - если нет.
+        /// </returns>
+        [HttpDelete("{id:long}")]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute]  int id)
+        {
+            var result = await _repo.Delete(id);
+            if (result == false)
+            {
+                return NotFound();
+            }
+            return Ok(id);
         }
     }
 }
