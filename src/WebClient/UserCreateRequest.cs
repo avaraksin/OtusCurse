@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace WebClient
 {
+    /// <summary>
+    /// Взаимодействие с сервером
+    /// </summary>
     public class UserCreateRequest
     {
         private string serverAddress = $"https://localhost:5001/";
+        
+        /// <summary>
+        /// Получить клиента по id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task GetUser(int id)
         {
             var httpClient = new HttpClient();
@@ -23,6 +32,13 @@ namespace WebClient
             user.PrintMe();
         }
 
+
+
+        /// <summary>
+        /// Записать клиента в БД
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public async Task AddUser(Users user)
         {
             var httpClient = new HttpClient();

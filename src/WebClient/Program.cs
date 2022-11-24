@@ -7,12 +7,15 @@ namespace WebClient
     {
         static async Task Main(string[] args)
         {
-            int id;
+            
             while (true)
             {
+                int id;
+                string answer;
+
                 Console.WriteLine("1. Вывод данных о клиенте");
                 Console.Write("Укажите id клиента: ");
-                string answer;
+                
                 do
                 {
                     answer = Console.ReadLine();
