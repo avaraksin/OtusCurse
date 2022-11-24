@@ -1,31 +1,23 @@
 global using  Microsoft.EntityFrameworkCore;
 global using System.Collections.Generic;
 global using System.Threading.Tasks;
-global using System.Linq;
-
 global using WebApi.Models;
 global using WebApi.Repository;
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace WebApi
 {
     public class Startup
-    {
-        private string ConnectionString = "Data Source=91.219.6.251\\SQLEXPRESS; Initial Catalog=Otus; User Id=otuslogin; Password=1234";
-        
+    {        
         public void ConfigureServices(IServiceCollection services)
         {
+            // Контекст для работы с БД
             services.AddDbContextFactory<AppFactory>(
-                options => options.UseSqlServer(ConnectionString));
+                options => options.UseSqlServer("name=ConnectionStrings:WebApiDatabase"));
             
             services.AddScoped(typeof(IRepository<>), typeof(RepoEF<>));
             
