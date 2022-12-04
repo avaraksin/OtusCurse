@@ -10,6 +10,6 @@ namespace SolidPrinciple
     {
         public int MinRange { get; set; }
         public int MaxRange { get; set; }
-        public int TryNumber { get; set; }
+        public int AttempNumber { get; set; }
     }
 }
