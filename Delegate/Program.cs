@@ -44,7 +44,7 @@ Console.WriteLine($"Список файлов директории {dirName}:");
 DirectoryChecker directoryChecker = new DirectoryChecker(dirName);
 
 // Создаем экземпляр класса-подписанта
-FileChecker fileChecker = new();
+FileChecker? fileChecker = new();
 
 // Подписываемся на событие
 directoryChecker.FileFound += fileChecker.NewFileFound;

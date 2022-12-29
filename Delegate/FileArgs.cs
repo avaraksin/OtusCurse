@@ -8,7 +8,7 @@
         /// <summary>
         /// Имя файла
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName { get; }
         
         /// <summary>
         /// Показывать следующий файл

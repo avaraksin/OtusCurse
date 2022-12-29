@@ -29,36 +29,23 @@
         /// </summary>
         public void GetFilesInDir()
         {
-            // Номер файла в массиве
-            int fileNumber = 0;
-
-            // массив файлов
-            string[]? files;
-
-            // Выводить следующий файл
-            bool next = true;
-
-            // Получаем списокфайлов в директории
-            files = Directory.GetFiles(dirName);
+            // Получаем список файлов в директории
+            string[]? files = Directory.GetFiles(dirName);
             
             // Цикл по  всем файлам
-            while (fileNumber < files.Length && next)
+            foreach (string file in files)
             {
-                FileArgs fileArgs = new (string.Empty);
+                FileArgs fileArgs = new FileArgs(file);
                 
                 // Генерируем событие. В качестве параметра передаем класс FileArgs - 
                 // наследник EventArgs
-                FileFound?.Invoke(this, fileArgs = new FileArgs(files[fileNumber]));
+                FileFound?.Invoke(this, fileArgs);
                 
-                fileNumber++;
-
+                
                 // Показывать следующий файл - передает подписант
                 // через свойство класса - параметра события
-                next = fileArgs.GetNext;
-            }
-            
+                if (fileArgs.GetNext == false) break;
+            }            
         }
-
-
-}
+    }
 }
