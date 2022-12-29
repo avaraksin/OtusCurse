@@ -1,7 +1,7 @@
 ﻿namespace Delegate
 {
     /// <summary>
-    /// Статический класс - кониейнер
+    /// Статический класс - контейнер
     /// </summary>
     public static class ExtentionClass
     {
@@ -14,12 +14,13 @@
         /// Делегат типа Func<in T, out float>, возвращающий число float для объета T
         /// </param>
         /// <returns>Возвращаем объект T, имеющий максимальный GetParameter(T)</returns>
-        public static T? GetMax<T>(this IEnumerable<T> e, Func<T, float> getParameter) 
+        public static T? GetMax<T>(this IEnumerable<T>? e, Func<T, float>? getParameter) 
         {
             // Упорядочиваем по убыванию чисел, возвращенных GetParameter() 
             // коллецию объектов T и берем первый элемент
-            return e.OrderByDescending(x => getParameter(x)).FirstOrDefault();
+            return e != null && getParameter != null ? 
+                e.OrderByDescending(x => getParameter(x)).FirstOrDefault() 
+                : default(T);
         }
-
     }
 }
