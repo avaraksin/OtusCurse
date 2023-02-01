@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Otus.Teaching.Concurrency.Import.Handler.Data;
+using System;
 using System.IO;
+using System.Threading;
 using XmlDataGenerator = Otus.Teaching.Concurrency.Import.DataGenerator.Generators.XmlGenerator;
 
 namespace Otus.Teaching.Concurrency.Import.XmlGenerator
@@ -14,21 +16,49 @@ namespace Otus.Teaching.Concurrency.Import.XmlGenerator
         {
             if (!TryValidateAndParseArgs(args))
                 return;
-            
-            Console.WriteLine("Generating xml data...");
 
-            var generator = GeneratorFactory.GetGenerator(_dataFileName, _dataCount);
+            StartSetting setting = new AppSetting().startSetting;
+            Console.WriteLine($"Generating xml data by {setting}");
+
+            IDataGenerator generator;
+
+            File.Delete(_dataFileName);
+
+            if (setting == StartSetting.Procedure)
+            {
+                generator = GeneratorFactory.GetGenerator(_dataFileName, _dataCount);
+                generator.Generate();
+            }
+            if (setting == StartSetting.Thread)
+            {
+                Thread thread = new Thread( () =>
+                {
+                    generator = GeneratorFactory.GetGenerator(_dataFileName, _dataCount);
+                    generator.Generate();
+                    Console.WriteLine("Quit the thread");
+                });
+                thread.Start();
+                thread.Join();
+            }
+
+            Thread.Sleep(10000);
             
-            generator.Generate();
-            
-            Console.WriteLine($"Generated xml data in {_dataFileName}...");
+            Console.WriteLine($"Generated xml data in {_dataFileName} by {setting}");
         }
 
         private static bool TryValidateAndParseArgs(string[] args)
         {
             if (args != null && args.Length > 0)
             {
-                _dataFileName = Path.Combine(_dataFileDirectory, $"{args[0]}.xml");
+                var fileName = args[0];
+                if (fileName.Contains("\\"))
+                {
+                    _dataFileName = fileName;
+                }
+                else
+                {
+                    _dataFileName = Path.Combine(_dataFileDirectory, $"{fileName}.xml");
+                }
             }
             else
             {
