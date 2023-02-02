@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
+using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.DataGenerator.Generators;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 
@@ -43,6 +44,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader
 
                 Console.WriteLine($"Loader started with process Id {Process.GetCurrentProcess().Id}...");
                 GenerateCustomersDataFile();
+                //p_Exited(null, null);
             }
             if (app.startSetting == StartSetting.Process)
             {
@@ -50,20 +52,27 @@ namespace Otus.Teaching.Concurrency.Import.Loader
                 ProcessStartInfo StartInfo = new ProcessStartInfo(app.processFile);
                 StartInfo.Arguments = $"\"{_dataFileName}\" {_dataCount}";
                 StartInfo.UseShellExecute = true;
-                var process = Process.Start(StartInfo);
+                var process = new Process();
+                process.StartInfo = StartInfo;
+                process.Start();
+
                 Console.WriteLine($"Loader started with process Id {process.Id}...");
+                process.WaitForExit();
             }
             
-
+            Stopwatch stopwatch = Stopwatch.StartNew();
             List<Customer> customers = new XmlParser().Parse(_dataFileName);
             var loader = new FakeDataLoader();
 
             loader.LoadData(customers);
 
-            var context = new Otus.Teaching.Concurrency.Import.DataAccess.Repositories.AppContext();
+            var context = SqliteContext.GetInstance();
             var cnts = context.customers.Count();
 
             Console.WriteLine($"Число записей: {cnts}");
+
+            stopwatch.Stop();
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
 
         }
 
@@ -71,6 +80,11 @@ namespace Otus.Teaching.Concurrency.Import.Loader
         {
             var xmlGenerator = new XmlGenerator(_dataFileName, 1000);
             xmlGenerator.Generate();
+        }
+
+        static void p_Exited(object sender, EventArgs e)
+        {
+            
         }
     }
 }

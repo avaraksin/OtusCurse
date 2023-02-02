@@ -4,10 +4,14 @@ using Otus.Teaching.Concurrency.Import.Handler.Entities;
 
 namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
-    public class AppContext : DbContext
+    public class SqliteContext : DbContext
     {
-        public AppContext()
+        public static SqliteContext instance { get; private set; }
+        public SqliteContext()
         {
+            if (instance != null) return;
+
+            instance = this;
             Database.EnsureCreated();
         }
 
@@ -21,6 +25,15 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
         }
 
         public DbSet<Customer> customers { get; set; }
+
+        public static SqliteContext GetInstance()
+        {
+            if (instance == null)
+            {
+                instance = new SqliteContext();
+            }
+            return instance;
+        }
  
     }
 }

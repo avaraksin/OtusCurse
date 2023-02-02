@@ -11,13 +11,10 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         public void LoadData(List<Customer> customerList)
         {
             Console.WriteLine("Loading data...");
-
-            var context = new Otus.Teaching.Concurrency.Import.DataAccess.Repositories.AppContext();
-            
+                        
             foreach (var item in customerList)
             {
                 var x = new CustomerRepository();
-                x.context = context;
                 x.AddCustomer(item);
             }
             

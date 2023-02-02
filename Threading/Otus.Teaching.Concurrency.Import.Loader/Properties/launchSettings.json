@@ -2,7 +2,7 @@
   "profiles": {
     "Otus.Teaching.Concurrency.Import.Loader": {
       "commandName": "Project",
-      "commandLineArgs": "customers 1000"
+      "commandLineArgs": "customers 5000"
     }
   }
 }

@@ -7,14 +7,12 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
     public class CustomerRepository
         : ICustomerRepository
-    {
-        public AppContext context { get; set; }
+    { 
         public void AddCustomer(Customer customer)
-        {            
+        {
+            var context = SqliteContext.GetInstance();
             context.customers.Add(customer);
             context.SaveChanges();
-
-            Console.WriteLine($"Count: {context.customers.Count()}");
         }
     }
 }

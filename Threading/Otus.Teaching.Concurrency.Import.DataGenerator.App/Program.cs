@@ -41,8 +41,6 @@ namespace Otus.Teaching.Concurrency.Import.XmlGenerator
                 thread.Join();
             }
 
-            Thread.Sleep(10000);
-            
             Console.WriteLine($"Generated xml data in {_dataFileName} by {setting}");
         }
 
