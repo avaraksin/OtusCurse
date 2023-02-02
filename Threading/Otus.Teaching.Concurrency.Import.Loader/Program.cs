@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json;
 using System.Reflection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
@@ -17,7 +18,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader
         private static readonly string _dataFileDirectory = AppDomain.CurrentDomain.BaseDirectory;
         private static string _dataFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "customers.xml");
         private static int _dataCount = 1000;
-        
+
         static void Main(string[] args)
         {
             if (args != null)
@@ -64,27 +65,25 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             List<Customer> customers = new XmlParser().Parse(_dataFileName);
             var loader = new FakeDataLoader();
 
+            // Создаем таблицу в БД.
+            var context = new SqliteContext();
+            context.Database.EnsureCreated();
+
             loader.LoadData(customers);
 
-            var context = SqliteContext.GetInstance();
+            
             var cnts = context.customers.Count();
 
             Console.WriteLine($"Число записей: {cnts}");
 
             stopwatch.Stop();
             Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
-
         }
 
         static void GenerateCustomersDataFile()
         {
             var xmlGenerator = new XmlGenerator(_dataFileName, 1000);
             xmlGenerator.Generate();
-        }
-
-        static void p_Exited(object sender, EventArgs e)
-        {
-            
         }
     }
 }

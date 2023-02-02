@@ -7,8 +7,7 @@ using Otus.Teaching.Concurrency.Import.Handler.Entities;
 
 namespace Otus.Teaching.Concurrency.Import.DataAccess.Parsers
 {
-    public class XmlParser
-        : IDataParser<List<Customer>>
+    public class XmlParser : IDataParser<List<Customer>>
     {
         public List<Customer> Parse(string file)
         {
@@ -18,7 +17,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Parsers
             {
                 customerList = (xmlSerializer.Deserialize(fs) as CustomersList).Customers;
             }
-
+            
             return customerList;
         }
     }
