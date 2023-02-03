@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
-using System.Reflection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
@@ -16,12 +14,24 @@ namespace Otus.Teaching.Concurrency.Import.Loader
 {
     class Program
     {
+        /// <summary>
+        /// Папка с программой
+        /// </summary>
         private static readonly string _dataFileDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+        /// <summary>
+        /// xml-файл
+        /// </summary>
         private static string _dataFileName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "customers.xml");
+
+        /// <summary>
+        /// Число записей по умолчанию
+        /// </summary>
         private static int _dataCount = 1000;
 
         static void Main(string[] args)
         {
+            //Обрабатываем параметры коммандной строки
             if (args != null)
             {
                 if (args.Length == 1)
@@ -39,18 +49,25 @@ namespace Otus.Teaching.Concurrency.Import.Loader
                 }
             }
 
+            Console.WriteLine($"Число записей: {_dataCount}");
+            
+            // Получаем настройки программы
             AppSetting app = new AppSetting();
+            int recordsPerThread = app.recordsPerThread;
+            Console.WriteLine($"Количество обрабатываемых записей в потоке: {recordsPerThread}");
+            Console.WriteLine();
 
-            if (app.startSetting == StartSetting.Procedure)
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+
+            if (app.startSetting == StartSetting.Procedure) // Создание xml-файла вызовом процедуры
             {
-
                 Console.WriteLine($"Loader started with process Id {Process.GetCurrentProcess().Id}...");
                 GenerateCustomersDataFile();
-                //p_Exited(null, null);
             }
-            if (app.startSetting == StartSetting.Process)
+            
+            if (app.startSetting == StartSetting.Process) // Создание xml-файла вызовом специального процесса
             {
-
                 ProcessStartInfo StartInfo = new ProcessStartInfo(app.processFile);
                 StartInfo.Arguments = $"\"{_dataFileName}\" {_dataCount}";
                 StartInfo.UseShellExecute = true;
@@ -58,43 +75,70 @@ namespace Otus.Teaching.Concurrency.Import.Loader
                 process.StartInfo = StartInfo;
                 process.Start();
 
-                Console.WriteLine($"Loader started with process Id {process.Id}...");
+                Console.WriteLine($"Loader started with new process Id {process.Id}...");
+
+                // Ждем завершенния процесса
                 process.WaitForExit();
             }
-            
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            stopwatch.Stop();
+            Console.WriteLine($"Создание xml-файла (мск): {(int)(stopwatch.ElapsedMilliseconds)}");
+            Console.WriteLine();
+
+
+            stopwatch.Restart();
+            // Парсим xml- файл
             List<Customer> customers = new XmlParser().Parse(_dataFileName);
+            stopwatch.Stop();
+            Console.WriteLine($"Парсинг xml-файла (мск): {(int)(stopwatch.ElapsedMilliseconds)}");
+            Console.WriteLine();
             
 
             // Создаем таблицу в БД.
             var context = new SqliteContext();
             context.Database.EnsureCreated();
 
-
-
-
             IDataLoader loader;
+            int cnts;
 
-            //Console.WriteLine("Working with THREADS");
-            //loader = new TreadDataLoader();
-            //loader.LoadData(customers);
-            //var cnts = context.customers.Count();
-            //Console.WriteLine($"Число записей: {cnts}");
-            //stopwatch.Stop();
-            //Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
-            //Console.WriteLine();
-            
-            //context.customers.RemoveRange(customers);
-            stopwatch.Reset();
-            Console.WriteLine("Working with THREADPOOL");
-            loader = new PoolDataLoader();
+            // Наполняем БД, используя метод
+            stopwatch.Restart();
+            Console.WriteLine("Working with PROCEDURE");
+            loader = new ProcedureDataLoader();
             loader.LoadData(customers);
-            var cnts = context.customers.Count();
-            Console.WriteLine($"Число записей: {cnts}");
+            cnts = context.customers.Count();
+            Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
             stopwatch.Stop();
-            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
+            Console.WriteLine();
 
-            
+            // Очищаем таблицу
+            context.customers.RemoveRange(customers);
+            context.SaveChanges();
+
+            // Наполяем БД, создавая потоки
+            stopwatch.Restart();
+            Console.WriteLine("Working with THREADS");
+            loader = new ThreadDataLoader(recordsPerThread);
+            loader.LoadData(customers);
+            cnts = context.customers.Count();
+            Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
+            stopwatch.Stop();
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
+            Console.WriteLine();
+
+            // Очищаем таблицу
+            context.customers.RemoveRange(customers);
+            context.SaveChanges();
+
+            // Наполняем БД, используя очередь потоков
+            stopwatch.Restart();
+            Console.WriteLine("Working with THREADPOOL");
+            loader = new PoolDataLoader(recordsPerThread);
+            loader.LoadData(customers);
+            cnts = context.customers.Count();
+            Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
+            stopwatch.Stop();
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
         }
 
         static void GenerateCustomersDataFile()

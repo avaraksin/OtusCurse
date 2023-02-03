@@ -24,12 +24,12 @@ namespace Otus.Teaching.Concurrency.Import.XmlGenerator
 
             File.Delete(_dataFileName);
 
-            if (setting == StartSetting.Procedure)
+            if (setting == StartSetting.Procedure) // Создание xml-файла в методе
             {
                 generator = GeneratorFactory.GetGenerator(_dataFileName, _dataCount);
                 generator.Generate();
             }
-            if (setting == StartSetting.Thread)
+            if (setting == StartSetting.Thread) // Создание xml-файла в новом потоке
             {
                 Thread thread = new Thread( () =>
                 {

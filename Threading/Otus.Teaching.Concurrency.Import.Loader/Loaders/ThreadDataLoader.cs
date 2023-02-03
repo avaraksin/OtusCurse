@@ -7,27 +7,43 @@ using System.Threading;
 
 namespace Otus.Teaching.Concurrency.Import.Core.Loaders
 {
-    public class TreadDataLoader : IDataLoader
+    /// <summary>
+    /// Класс обработки массива записей созданием новых потоков
+    /// </summary>
+    public class ThreadDataLoader : IDataLoader
     {
-        protected int threadCount { get; private set; } = 21000;
+        /// <summary>
+        /// Число записей обрабатываемых одним потоком
+        /// </summary>
+        protected int threadCount { get; } = 21000;
 
-        public TreadDataLoader(int threadCount)
+        public ThreadDataLoader(int threadCount)
         {
             this.threadCount = threadCount;
         }
 
-        public TreadDataLoader()
+        public ThreadDataLoader()
         {}
 
+        /// <summary>
+        /// Основной метод загрузки данных
+        /// </summary>
+        /// <param name="customerList">
+        /// массив записей
+        /// </param>
         public virtual void LoadData(List<Customer> customerList)
         {
-            
             Console.WriteLine("Loading data by Threads...");
 
+            // Число записей в массиве
             int recCount = customerList.Count;
+            
+            // Счетчик потоков
+            int totalthreadCount = 0;
 
             for (int i = 1; i <= recCount; i += threadCount)
             {
+                totalthreadCount++;
                 var thread = new Thread(() =>
                 {
                     ThreadLoadData(
@@ -35,16 +51,23 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
                         );
                 });
                 thread.Start();
+                // Синхронизируем потоки с основным приложением
                 thread.Join();
             }
-            
+            Console.WriteLine($"Создано потоков: {totalthreadCount}");
             Console.WriteLine("Loaded data by Threads...");
         }
 
-        protected void ThreadLoadData(object list)
+        /// <summary>
+        /// Метод потока
+        /// virlual - переопределяется в PoolDataLoader
+        /// </summary>
+        /// <param name="list">
+        /// Массив записей
+        /// </param>
+        protected virtual void ThreadLoadData(object list)
         {
             List<Customer> customerList = (List<Customer>)list;
-            Console.WriteLine(customerList.Count);
 
             var x = new CustomerRepository();
             foreach (var item in customerList)
