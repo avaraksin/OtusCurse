@@ -10,6 +10,7 @@ using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.DataGenerator.Generators;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
+using Otus.Teaching.Concurrency.Import.Loader.Loaders;
 
 namespace Otus.Teaching.Concurrency.Import.Loader
 {
@@ -63,21 +64,37 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             
             Stopwatch stopwatch = Stopwatch.StartNew();
             List<Customer> customers = new XmlParser().Parse(_dataFileName);
-            var loader = new FakeDataLoader();
+            
 
             // Создаем таблицу в БД.
             var context = new SqliteContext();
             context.Database.EnsureCreated();
 
-            loader.LoadData(customers);
 
+
+
+            IDataLoader loader;
+
+            //Console.WriteLine("Working with THREADS");
+            //loader = new TreadDataLoader();
+            //loader.LoadData(customers);
+            //var cnts = context.customers.Count();
+            //Console.WriteLine($"Число записей: {cnts}");
+            //stopwatch.Stop();
+            //Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
+            //Console.WriteLine();
             
+            //context.customers.RemoveRange(customers);
+            stopwatch.Reset();
+            Console.WriteLine("Working with THREADPOOL");
+            loader = new PoolDataLoader();
+            loader.LoadData(customers);
             var cnts = context.customers.Count();
-
             Console.WriteLine($"Число записей: {cnts}");
-
             stopwatch.Stop();
             Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds/1000)}");
+
+            
         }
 
         static void GenerateCustomersDataFile()
