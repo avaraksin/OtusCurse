@@ -57,8 +57,6 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
                         };
                 var thread = new Thread(x => ThreadLoadData(p));
                 thread.Start();
-                // Синхронизируем потоки с основным приложением
-                //thread.Join();
             }
             Console.WriteLine($"Создано потоков: {totalthreadCount}");
 

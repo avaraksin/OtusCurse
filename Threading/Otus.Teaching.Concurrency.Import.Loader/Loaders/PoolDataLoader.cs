@@ -51,5 +51,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
             Console.WriteLine($"Число потоков в очереди: {totalthreadCount}");
             Console.WriteLine("Loading data by ThreadPool...");
         }
+
+        // Используем ThreadDataLoader из базового класса
     }
 }

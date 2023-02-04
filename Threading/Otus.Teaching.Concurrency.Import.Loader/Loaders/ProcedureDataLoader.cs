@@ -27,6 +27,10 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
             Console.WriteLine("Loaded data by Procedure...");
         }
 
+        /// <summary>
+        ///  Переопредяем метод, т.к. тут не нужны объекты синхронизации
+        /// </summary>
+        /// <param name="obj"></param>
         protected override void ThreadLoadData(object obj)
         {
             List<Customer> customerList = obj as List<Customer>;
