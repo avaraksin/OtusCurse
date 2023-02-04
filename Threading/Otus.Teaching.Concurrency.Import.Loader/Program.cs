@@ -100,7 +100,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             IDataLoader loader;
             int cnts;
 
-            // Наполняем БД, используя метод
+            //Наполняем БД, используя метод
             stopwatch.Restart();
             Console.WriteLine("Working with PROCEDURE");
             loader = new ProcedureDataLoader();

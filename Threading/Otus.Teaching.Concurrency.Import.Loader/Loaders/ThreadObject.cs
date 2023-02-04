@@ -13,11 +13,11 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
         /// <summary>
         /// Массив записей
         /// </summary>
-        public List<Customer> customerList;
+        public List<Customer> customerList { get; set; }
         
         /// <summary>
         /// Объект синхронизации
         /// </summary>
-        public AutoResetEvent are;
+        public AutoResetEvent are { get; set; }
     }
 }

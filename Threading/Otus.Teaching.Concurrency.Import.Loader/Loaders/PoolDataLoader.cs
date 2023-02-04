@@ -51,25 +51,5 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
             Console.WriteLine($"Число потоков в очереди: {totalthreadCount}");
             Console.WriteLine("Loading data by ThreadPool...");
         }
-
-        /// <summary>
-        /// Переопределяем метод, т.к. передаем ему в качестве параметра класс ThreadObject,
-        /// один из полей которого - объект синхронизации are
-        /// </summary>
-        /// <param name="obj"></param>
-        protected override void ThreadLoadData(object obj)
-        {
-            ThreadObject threadObject = obj as ThreadObject;
-            List<Customer> customerList = threadObject.customerList;
-            AutoResetEvent autoResetEvent = threadObject.are;
-
-            var x = new CustomerRepository();
-            foreach (var item in customerList)
-            {
-                x.AddCustomer(item);
-            }
-            // Выставлем объект в несигнальное состояние. Поток завершает работу.
-            autoResetEvent.Set();
-        }
     }
 }
