@@ -5,6 +5,6 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
 {
     public interface IDataLoader
     {
-        void LoadData(List<Customer> list);
+        void LoadData(List<ThreadCustomer> list);
     }
 }

@@ -7,6 +7,6 @@ namespace Otus.Teaching.Concurrency.Import.DataGenerator.Dto
     [XmlRoot("Customers")]
     public class CustomersList
     {
-        public List<Customer> Customers { get; set; }
+        public List<ThreadCustomer> Customers { get; set; }
     }
 }

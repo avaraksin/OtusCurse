@@ -10,12 +10,12 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Parsers
     /// <summary>
     /// Парсер xml-файла
     /// </summary>
-    public class XmlParser : IDataParser<List<Customer>>
+    public class XmlParser : IDataParser<List<ThreadCustomer>>
     {
-        public List<Customer> Parse(string file)
+        public List<ThreadCustomer> Parse(string file)
         {
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(CustomersList));
-            List<Customer> customerList;
+            List<ThreadCustomer> customerList;
             using (FileStream fs = new FileStream(file, FileMode.OpenOrCreate))
             {
                 customerList = (xmlSerializer.Deserialize(fs) as CustomersList).Customers;

@@ -19,7 +19,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
             { }
         public PoolDataLoader() : base() { }
 
-        public override void LoadData(List<Customer> customerList)
+        public override void LoadData(List<ThreadCustomer> customerList)
         {
             int recCount = customerList.Count;
 

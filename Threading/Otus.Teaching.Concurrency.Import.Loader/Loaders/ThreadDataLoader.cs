@@ -1,10 +1,12 @@
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
+using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 using Otus.Teaching.Concurrency.Import.Loader.Loaders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Otus.Teaching.Concurrency.Import.Core.Loaders
 {
@@ -32,7 +34,7 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// <param name="customerList">
         /// массив записей
         /// </param>
-        public virtual void LoadData(List<Customer> customerList)
+        public virtual void LoadData(List<ThreadCustomer> customerList)
         {
             Console.WriteLine("Loading data by Threads...");
 
@@ -74,10 +76,10 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         protected virtual void ThreadLoadData(object obj)
         {
             ThreadObject threadObject = obj as ThreadObject;
-            List<Customer> customerList = threadObject.customerList;
+            List<ThreadCustomer> customerList = threadObject.customerList;
             AutoResetEvent autoResetEvent = threadObject.are;
 
-            var x = new CustomerRepository();
+            ICustomerRepository x = new CustomerRepository();
             foreach (var item in customerList)
             {
                 x.AddCustomer(item);

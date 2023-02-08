@@ -22,6 +22,6 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
             base.OnConfiguring(options);
         }
 
-        public DbSet<Customer> customers { get; set; }
+        public DbSet<ThreadCustomer> threadcustomers { get; set; }
     }
 }

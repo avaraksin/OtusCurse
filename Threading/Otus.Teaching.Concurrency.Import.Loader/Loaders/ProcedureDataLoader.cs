@@ -1,6 +1,7 @@
 ﻿using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
+using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
 
         public ProcedureDataLoader() : base() { }
 
-        public override void LoadData(List<Customer> customerList)
+        public override void LoadData(List<ThreadCustomer> customerList)
         {
             Console.WriteLine("Loading data by Procedure...");
             ThreadLoadData(customerList);
@@ -33,9 +34,9 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
         /// <param name="obj"></param>
         protected override void ThreadLoadData(object obj)
         {
-            List<Customer> customerList = obj as List<Customer>;
+            List<ThreadCustomer> customerList = obj as List<ThreadCustomer>;
 
-            var x = new CustomerRepository();
+            ICustomerRepository x = new CustomerRepository();
             foreach (var item in customerList)
             {
                 x.AddCustomer(item);

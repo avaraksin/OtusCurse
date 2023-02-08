@@ -8,9 +8,9 @@ namespace Otus.Teaching.Concurrency.Import.DataGenerator.Generators
 {
     public static class RandomCustomerGenerator
     {
-        public static List<Customer> Generate(int dataCount)
+        public static List<ThreadCustomer> Generate(int dataCount)
         {
-            var customers = new List<Customer>();
+            var customers = new List<ThreadCustomer>();
             var customersFaker = CreateFaker();
 
             foreach (var customer in customersFaker.GenerateForever())
@@ -24,11 +24,11 @@ namespace Otus.Teaching.Concurrency.Import.DataGenerator.Generators
             return customers;
         }
 
-        private static Faker<Customer> CreateFaker()
+        private static Faker<ThreadCustomer> CreateFaker()
         {
             var id = 1;
-            var customersFaker = new Faker<Customer>()
-                .CustomInstantiator(f => new Customer()
+            var customersFaker = new Faker<ThreadCustomer>()
+                .CustomInstantiator(f => new ThreadCustomer()
                 {
                     Id = id++
                 })

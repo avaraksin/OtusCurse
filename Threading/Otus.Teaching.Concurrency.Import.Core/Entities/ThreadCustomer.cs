@@ -1,8 +1,11 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Otus.Teaching.Concurrency.Import.Handler.Entities
 {
-    public class Customer
+    public class ThreadCustomer
     {
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public long Id { get; set; }
 
         public string FullName { get; set; }
 

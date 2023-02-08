@@ -13,7 +13,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
         /// <summary>
         /// Массив записей
         /// </summary>
-        public List<Customer> customerList { get; set; }
+        public List<ThreadCustomer> customerList { get; set; }
         
         /// <summary>
         /// Объект синхронизации
