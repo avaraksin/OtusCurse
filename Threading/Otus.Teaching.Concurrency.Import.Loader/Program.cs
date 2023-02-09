@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
+using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
@@ -32,6 +34,21 @@ namespace Otus.Teaching.Concurrency.Import.Loader
 
         static void Main(string[] args)
         {
+
+            var services = new ServiceCollection();
+
+            services.AddScoped<ProcedureDataLoader>();
+            services.AddScoped<ThreadDataLoader>();
+            services.AddScoped<PoolDataLoader>();
+            services.AddTransient<ICustomerRepository, CustomerRepository>();
+            
+            var serviceProvider = services.BuildServiceProvider();
+            
+            var repo = serviceProvider.GetService<ICustomerRepository>();
+            var procedureDataLoader = serviceProvider.GetService<ProcedureDataLoader>();
+            var threadDataLoader = serviceProvider.GetService<ThreadDataLoader>();
+            var poolDataLoader = serviceProvider.GetService<PoolDataLoader>();
+
             //Обрабатываем параметры коммандной строки
             if (args != null)
             {
@@ -54,8 +71,10 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             
             // Получаем настройки программы
             AppSetting app = new AppSetting();
-            int recordsPerThread = app.recordsPerThread;
-            Console.WriteLine($"Количество обрабатываемых записей в потоке: {recordsPerThread}");
+            int threadCount = app.recordsPerThread;
+            threadDataLoader.threadCount = threadCount;
+            poolDataLoader.threadCount = threadCount;
+            Console.WriteLine($"Количество обрабатываемых записей в потоке: {app.recordsPerThread}");
             Console.WriteLine();
 
             Stopwatch stopwatch = Stopwatch.StartNew();
@@ -92,53 +111,50 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             stopwatch.Stop();
             Console.WriteLine($"Парсинг xml-файла (мск): {(int)(stopwatch.ElapsedMilliseconds)}");
             Console.WriteLine();
-            
+
 
             // Создаем таблицу в БД.
-                        
-            ICustomerRepository _context = new CustomerRepository();
-            _context.CreateDB();
-            _context.Clear();
-            Console.WriteLine($"База данных: {_context.GetDbName()}");
+
+            repo.CreateDB();
+            repo.Clear();
+            Console.WriteLine($"База данных: {repo.GetDbName()}");
             Console.WriteLine();
 
-            IDataLoader loader;
             int cnts;
+            int recCount = customers.Count;
 
             //Наполняем БД, используя метод класса ProcedureDataLoader
             stopwatch.Restart();
             Console.WriteLine("Working with PROCEDURE");
-            loader = new ProcedureDataLoader();
-            loader.LoadData(customers);
-            cnts = _context.Count();
+
+            procedureDataLoader.LoadData(customers);
+            cnts = repo.Count();
             Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
             stopwatch.Stop();
             Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
             Console.WriteLine();
 
             // Очищаем таблицу
-            _context.Clear();
-
-            // Наполяем БД, создавая потоки
+            repo.Clear();
+            
+            //Наполяем БД, создавая потоки
             stopwatch.Restart();
             Console.WriteLine("Working with THREADS");
-            loader = new ThreadDataLoader(recordsPerThread);
-            loader.LoadData(customers);
-            cnts = _context.Count();
+            threadDataLoader.LoadData(customers);
+            cnts = repo.Count();
             Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
             stopwatch.Stop();
             Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
             Console.WriteLine();
-
+            
             // Очищаем таблицу
-            _context.Clear();
+            repo.Clear();
 
             // Наполняем БД, используя очередь потоков
             stopwatch.Restart();
             Console.WriteLine("Working with THREADPOOL");
-            loader = new PoolDataLoader(recordsPerThread);
-            loader.LoadData(customers);
-            cnts = _context.Count();
+            poolDataLoader.LoadData(customers);
+            cnts = repo.Count();
             Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
             stopwatch.Stop();
             Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");

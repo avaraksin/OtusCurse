@@ -1,6 +1,7 @@
 ﻿using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
+using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +16,8 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
     /// </summary>
     public class PoolDataLoader : ThreadDataLoader, IDataLoader
     {
-        public PoolDataLoader(int threadCount) : base(threadCount)
-            { }
-        public PoolDataLoader() : base() { }
+        public PoolDataLoader() : base()
+        {}
 
         public override void LoadData(List<ThreadCustomer> customerList)
         {
@@ -27,19 +27,19 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
 
             List<AutoResetEvent> areList = new List<AutoResetEvent>();
             int totalthreadCount = 0;
-            
+
             for (int i = 1; i <= recCount; i += threadCount)
             {
                 totalthreadCount++;
 
                 AutoResetEvent are = new AutoResetEvent(false);
                 areList.Add(are);
-                
+
                 ThreadPool.QueueUserWorkItem(
-                    ThreadLoadData, 
+                    ThreadLoadData,
                     new ThreadObject
                     {
-                        customerList = customerList.Where(x => x.Id >= i && x.Id < i + threadCount).ToList(), 
+                        customerList = customerList.Where(x => x.Id >= i && x.Id < i + threadCount).ToList(),
                         are = are
                     }
                    );

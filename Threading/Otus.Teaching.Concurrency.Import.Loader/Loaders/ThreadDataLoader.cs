@@ -18,16 +18,13 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// <summary>
         /// Число записей обрабатываемых одним потоком
         /// </summary>
-        protected int threadCount { get; } = 21000;
-
-        public ThreadDataLoader(int threadCount)
-        {
-            this.threadCount = threadCount;
-        }
+        public int threadCount { get; set; } = 21000;
 
         public ThreadDataLoader()
-        {}
+        {
+        }
 
+       
         /// <summary>
         /// Основной метод загрузки данных
         /// </summary>
@@ -73,16 +70,17 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// <param name="list">
         /// Массив записей
         /// </param>
-        protected virtual void ThreadLoadData(object obj)
+        public virtual void ThreadLoadData(object obj)
         {
             ThreadObject threadObject = obj as ThreadObject;
             List<ThreadCustomer> customerList = threadObject.customerList;
             AutoResetEvent autoResetEvent = threadObject.are;
 
-            ICustomerRepository x = new CustomerRepository();
+            ICustomerRepository _customerRepository = new CustomerRepository();
+
             foreach (var item in customerList)
             {
-                x.AddCustomer(item);
+                _customerRepository.AddCustomer(item);
             }
             // Выставлем объект в несигнальное состояние. Поток завершает работу.
             autoResetEvent.Set();

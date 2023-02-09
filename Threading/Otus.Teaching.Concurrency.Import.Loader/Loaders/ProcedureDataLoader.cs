@@ -16,10 +16,9 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
     /// </summary>
     public  class ProcedureDataLoader : ThreadDataLoader, IDataLoader
     {
-        public ProcedureDataLoader(int threadCount) : base(threadCount)
-        { }
+        public ProcedureDataLoader() : base()
+        {}
 
-        public ProcedureDataLoader() : base() { }
 
         public override void LoadData(List<ThreadCustomer> customerList)
         {
@@ -32,15 +31,16 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
         ///  Переопредяем метод, т.к. тут не нужны объекты синхронизации
         /// </summary>
         /// <param name="obj"></param>
-        protected override void ThreadLoadData(object obj)
+        public override void ThreadLoadData(object obj)
         {
             List<ThreadCustomer> customerList = obj as List<ThreadCustomer>;
+            ICustomerRepository _repo = new CustomerRepository();
 
-            ICustomerRepository x = new CustomerRepository();
             foreach (var item in customerList)
             {
-                x.AddCustomer(item);
+                _repo.AddCustomer(item);
             }
+
         }
     }
 }

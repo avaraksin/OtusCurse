@@ -9,57 +9,68 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
-        //private readonly SqliteContext _context;
-        private readonly MSSQLContext _context;
-
-        public CustomerRepository()
-        {
-            _context = new();
-        }
+        public CustomerRepository() {}
+        
         public void AddCustomer(ThreadCustomer customer)
         {
-            _context.threadcustomers.Add(customer);
-            _context.SaveChanges();
+            using (var _context = new SqliteContext())
+            {
+                _context.threadcustomers.Add(customer);
+                _context.SaveChanges();
+            }
         }
 
         public void Clear()
         {
-            if (_context.threadcustomers.Count() != 0)
+            using (var _context = new SqliteContext())
             {
-                var list = _context.threadcustomers.ToList();
-                foreach (var customer in list)
+                if (_context.threadcustomers.Count() != 0)
                 {
-                    _context.threadcustomers.Remove(customer);
+                    var list = _context.threadcustomers.ToList();
+                    foreach (var customer in list)
+                    {
+                        _context.threadcustomers.Remove(customer);
+                    }
+                    _context.SaveChanges();
                 }
-                _context.SaveChanges();
             }
         }
         public int Count()
         {
-            return _context.threadcustomers.Count();
+            using (var _context = new SqliteContext())
+            {
+                return _context.threadcustomers.Count();
+            }
         }
 
         public void CreateDB()
         {
-            if (_context.GetType() == typeof(SqliteContext))
+            using (var _context = new SqliteContext())
             {
-                _context.Database.EnsureCreated();
+                if (_context.GetType() == typeof(SqliteContext))
+                {
+                    _context.Database.EnsureCreated();
+                }
             }
         }
 
         public string GetDbName()
         {
-            var dbname = _context.GetType().Name;
+            using (var _context = new SqliteContext())
+            {
+                var dbname = _context.GetType().Name;
 
-            if (dbname.ToLower().Contains("lite"))
-            {
-                return "SQLite";
+                if (dbname.ToLower().Contains("lite"))
+                {
+                    return "SQLite";
+                }
+                if (dbname.ToLower().Contains("ms"))
+                {
+                    return "MS SQL";
+                }
+                return "Unknown Database";
             }
-            if (dbname.ToLower().Contains("ms"))
-            {
-                return "MS SQL";
-            }
-            return "Unknown Database";
         }
+
     }
 }
