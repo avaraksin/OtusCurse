@@ -14,13 +14,13 @@ Stopwatch stopwatch = Stopwatch.StartNew();
 sum = CalculateSum.PLinq(ints);
 stopwatch.Stop();
 Console.WriteLine($"PLinq\tСумма: {sum}\tВремя (млс): {stopwatch.Elapsed.TotalMilliseconds}");
-Task.Delay(1000).Wait();
+//Task.Delay(1000).Wait();
 
 stopwatch.Restart();
 sum = CalculateSum.CalculateByThreads(ints);
 stopwatch.Stop();
 Console.WriteLine($"Threads\tСумма: {sum}\tВремя (млс): {stopwatch.Elapsed.TotalMilliseconds}");
-Task.Delay(1000).Wait();
+//Task.Delay(1000).Wait();
 
 stopwatch.Restart();
 sum = CalculateSum.CalculateByProcedure(ints);
