@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
@@ -20,8 +21,12 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// </summary>
         public int threadCount { get; set; } = 21000;
 
-        public ThreadDataLoader()
+        private readonly ICustomerRepository _customerRepository;
+
+        public ThreadDataLoader(/*ICustomerRepository customerRepository*/ IServiceScopeFactory serviceProvider)
         {
+            //_customerRepository = customerRepository;
+            _customerRepository = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ICustomerRepository>();
         }
 
        
@@ -31,7 +36,7 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// <param name="customerList">
         /// массив записей
         /// </param>
-        public virtual void LoadData(List<ThreadCustomer> customerList)
+        public virtual async void LoadData(List<ThreadCustomer> customerList)
         {
             Console.WriteLine("Loading data by Threads...");
 
@@ -41,25 +46,27 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
             // Счетчик потоков
             int totalthreadCount = 0;
 
-            List<AutoResetEvent> areList = new List<AutoResetEvent>();
+            //List<AutoResetEvent> areList = new List<AutoResetEvent>();
+            List<Task> tasks = new List<Task>();
 
             for (int i = 1; i <= recCount; i += threadCount)
             {
-                AutoResetEvent are = new AutoResetEvent(false);
-                areList.Add(are);
+                //AutoResetEvent are = new AutoResetEvent(false);
+                //areList.Add(are);
 
                 totalthreadCount++;
                 var p = new ThreadObject()
                         { 
-                            customerList = customerList.Where(x => x.Id >= i && x.Id < i + threadCount).ToList(),
-                            are = are
+                            customerList = customerList.Where(x => x.Id >= i && x.Id < i + threadCount).ToList()
+                            //are = are
                         };
-                var thread = new Thread(x => ThreadLoadData(p));
-                thread.Start();
+                var t = Task.Factory.StartNew(() => ThreadLoadData(p));
+                
             }
             Console.WriteLine($"Создано потоков: {totalthreadCount}");
 
-            WaitHandle.WaitAll( areList.ToArray() );
+            //WaitHandle.WaitAll(areList.ToArray());
+            await Task.WhenAll(tasks.ToArray());
             Console.WriteLine("Loaded data by Threads...");
         }
 
@@ -74,16 +81,16 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         {
             ThreadObject threadObject = obj as ThreadObject;
             List<ThreadCustomer> customerList = threadObject.customerList;
-            AutoResetEvent autoResetEvent = threadObject.are;
+            //AutoResetEvent autoResetEvent = threadObject.are;
 
-            ICustomerRepository _customerRepository = new CustomerRepository();
+            //ICustomerRepository _customerRepository = new CustomerRepository();
 
             foreach (var item in customerList)
             {
                 _customerRepository.AddCustomer(item);
             }
             // Выставлем объект в несигнальное состояние. Поток завершает работу.
-            autoResetEvent.Set();
+            //autoResetEvent.Set();
         }
     }
 }

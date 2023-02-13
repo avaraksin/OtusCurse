@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 
@@ -9,11 +10,19 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
-        public CustomerRepository() {}
-        
+        //private readonly SqliteContext _context;
+        private readonly MSSQLContext _context;
+        public CustomerRepository(IServiceScopeFactory serviceProvider/*MSSQLContext mSSQLContext*/)
+        {
+            _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>();
+            //_context = mSSQLContext;
+        }
+
+    
+
         public void AddCustomer(ThreadCustomer customer)
         {
-            using (var _context = new SqliteContext())
+            //using (var _context = new SqliteContext())
             {
                 _context.threadcustomers.Add(customer);
                 _context.SaveChanges();
@@ -22,7 +31,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void Clear()
         {
-            using (var _context = new SqliteContext())
+            //using (var _context = new SqliteContext())
             {
                 if (_context.threadcustomers.Count() != 0)
                 {
@@ -37,7 +46,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
         }
         public int Count()
         {
-            using (var _context = new SqliteContext())
+            //using (var _context = new SqliteContext())
             {
                 return _context.threadcustomers.Count();
             }
@@ -45,7 +54,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void CreateDB()
         {
-            using (var _context = new SqliteContext())
+            //using (var _context = new SqliteContext())
             {
                 if (_context.GetType() == typeof(SqliteContext))
                 {
@@ -56,7 +65,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public string GetDbName()
         {
-            using (var _context = new SqliteContext())
+            //using (var _context = new SqliteContext())
             {
                 var dbname = _context.GetType().Name;
 
