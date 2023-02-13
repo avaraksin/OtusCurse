@@ -61,12 +61,13 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
                             //are = are
                         };
                 var t = Task.Factory.StartNew(() => ThreadLoadData(p));
+                tasks.Add(t);
                 
             }
             Console.WriteLine($"Создано потоков: {totalthreadCount}");
 
+            Task.WaitAll(tasks.ToArray());
             //WaitHandle.WaitAll(areList.ToArray());
-            await Task.WhenAll(tasks.ToArray());
             Console.WriteLine("Loaded data by Threads...");
         }
 

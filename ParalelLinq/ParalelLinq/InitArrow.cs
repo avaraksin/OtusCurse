@@ -6,14 +6,17 @@
     public class InitArrow
     {
         private const int _array = 10000000;
-       public List<long> initList { get; private set; }
+        public int[] ints { get; }
+        public List<long> initList { get; }
 
         public InitArrow() 
         {
             initList= new List<long>();
+            ints = new int[_array];
             for(int i = 0; i < _array; i++)
             {
                 var item = new Random().Next(0, 100000000);
+                ints[i] = item;
                 initList.Add(item);
             }
         }

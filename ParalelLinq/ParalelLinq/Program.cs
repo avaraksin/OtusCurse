@@ -3,14 +3,29 @@ using ParalelLinq;
 using System.Diagnostics;
 
 var initArraow = new InitArrow();
-var ints = initArraow.initList;
+var ints = initArraow.ints;
 
-Console.WriteLine($"Число элементов в массиве: {ints.Count()}");
+Console.WriteLine($"Число элементов в массиве: {ints.Length}");
 Console.WriteLine();
 
-var calc = new CalculateSum();
+long sum;
 
-Stopwatch Stopwatch= Stopwatch.StartNew();
-long sum = calc.CalculateByProcedure(ints);
-Stopwatch.Stop();
-Console.WriteLine($"Метод. Сумма: {sum}, Время (млс): {Stopwatch.Elapsed.TotalMilliseconds}");
+Stopwatch stopwatch = Stopwatch.StartNew();
+sum = CalculateSum.PLinq(ints);
+stopwatch.Stop();
+Console.WriteLine($"PLinq\tСумма: {sum}\tВремя (млс): {stopwatch.Elapsed.TotalMilliseconds}");
+Task.Delay(1000).Wait();
+
+stopwatch.Restart();
+sum = CalculateSum.CalculateByThreads(ints);
+stopwatch.Stop();
+Console.WriteLine($"Threads\tСумма: {sum}\tВремя (млс): {stopwatch.Elapsed.TotalMilliseconds}");
+Task.Delay(1000).Wait();
+
+stopwatch.Restart();
+sum = CalculateSum.CalculateByProcedure(ints);
+stopwatch.Stop();
+Console.WriteLine($"Метод.\tСумма: {sum}\tВремя (млс): {stopwatch.Elapsed.TotalMilliseconds}");
+
+
+
