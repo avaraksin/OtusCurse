@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
-    public class CommonDb : DbContext, IContext
+    public class CommonDb : DbContext
     {
         public CommonDb(DbContextOptions options) : base(options) { }
 

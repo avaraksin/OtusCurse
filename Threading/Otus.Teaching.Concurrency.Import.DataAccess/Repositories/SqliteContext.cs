@@ -7,7 +7,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
     /// <summary>
     /// Контекст работы с БД
     /// </summary>
-    public class SqliteContext : CommonDb, IContext
+    public class SqliteContext : CommonDb
     {
         /// <summary>
         /// Создаем базу SQLite в памяти

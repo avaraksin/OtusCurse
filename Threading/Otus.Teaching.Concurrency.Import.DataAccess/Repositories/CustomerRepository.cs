@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
@@ -17,7 +18,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
         }
 
         CommonDb currentDbContext =>
-             serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IContext>() as CommonDb;
+             serviceProvider.CreateScope().ServiceProvider.GetRequiredService<CommonDb>();
                
         public void AddCustomer(ThreadCustomer customer)
         {

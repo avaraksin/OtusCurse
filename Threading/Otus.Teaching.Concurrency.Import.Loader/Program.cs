@@ -34,22 +34,21 @@ namespace Otus.Teaching.Concurrency.Import.Loader
         static void Main(string[] args)
         {
 
-            var services = new ServiceCollection();
+            ServiceCollection services = new ServiceCollection();
 
             services.AddScoped<ProcedureDataLoader>();
             services.AddScoped<ThreadDataLoader>();
             services.AddScoped<PoolDataLoader>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
             
-            services.AddDbContextFactory<MSSQLContext>(); 
-            services.AddTransient(typeof(IContext), typeof(MSSQLContext));
+            services.AddTransient<CommonDb, MSSQLContext>();
+            services.AddDbContextFactory<CommonDb>();
             
-            var serviceProvider = services.BuildServiceProvider();
-            
-            var repo = serviceProvider.GetService<ICustomerRepository>();
-            var procedureDataLoader = serviceProvider.GetService<ProcedureDataLoader>();
-            var threadDataLoader = serviceProvider.GetService<ThreadDataLoader>();
-            var poolDataLoader = serviceProvider.GetService<PoolDataLoader>();
+            ServiceProvider serviceProvider = services.BuildServiceProvider();
+            ICustomerRepository repo = serviceProvider.GetService<ICustomerRepository>();
+            ProcedureDataLoader procedureDataLoader = serviceProvider.GetService<ProcedureDataLoader>();
+            ThreadDataLoader threadDataLoader = serviceProvider.GetService<ThreadDataLoader>();
+            PoolDataLoader poolDataLoader = serviceProvider.GetService<PoolDataLoader>();
 
             //Обрабатываем параметры коммандной строки
             if (args != null)
