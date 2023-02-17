@@ -9,7 +9,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            //optionsBuilder.UseSqlServer("Data Source=91.219.6.251\\SQLEXPRESS; Initial Catalog=Otus; TrustServerCertificate=True; User Id=otuslogin; Password=1234");
+            optionsBuilder.UseSqlServer("Data Source=91.219.6.251\\SQLEXPRESS; Initial Catalog=Otus; TrustServerCertificate=True; User Id=otuslogin; Password=1234");
         }
 
         public DbSet<ThreadCustomer> threadcustomers { get; set; }

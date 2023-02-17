@@ -1,7 +1,4 @@
-using System;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
@@ -11,18 +8,17 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
     public class CustomerRepository : ICustomerRepository
     {
         //private readonly SqliteContext _context;
-        private readonly MSSQLContext _context;
-        public CustomerRepository(IServiceScopeFactory serviceProvider/*MSSQLContext mSSQLContext*/)
+     
+        private readonly IServiceScopeFactory serviceProvider;
+        public CustomerRepository(IServiceScopeFactory _serviceProvider)
         {
-            _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>();
-            //_context = mSSQLContext;
+            serviceProvider = _serviceProvider;
         }
 
     
-
         public void AddCustomer(ThreadCustomer customer)
         {
-            //using (var _context = new SqliteContext())
+            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
             {
                 _context.threadcustomers.Add(customer);
                 _context.SaveChanges();
@@ -31,7 +27,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void Clear()
         {
-            //using (var _context = new SqliteContext())
+            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
             {
                 if (_context.threadcustomers.Count() != 0)
                 {
@@ -46,7 +42,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
         }
         public int Count()
         {
-            //using (var _context = new SqliteContext())
+            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
             {
                 return _context.threadcustomers.Count();
             }
@@ -54,7 +50,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void CreateDB()
         {
-            //using (var _context = new SqliteContext())
+            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
             {
                 if (_context.GetType() == typeof(SqliteContext))
                 {
@@ -65,7 +61,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public string GetDbName()
         {
-            //using (var _context = new SqliteContext())
+            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
             {
                 var dbname = _context.GetType().Name;
 

@@ -18,6 +18,12 @@ namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
         /// <summary>
         /// Объект синхронизации
         /// </summary>
-        public AutoResetEvent are { get; set; }
+        public AutoResetEvent? are { get; set; }
+
+        public ThreadObject()
+        {
+            are = null;
+        }
+                
     }
 }

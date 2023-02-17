@@ -38,20 +38,19 @@ namespace Otus.Teaching.Concurrency.Import.Loader
 
             var services = new ServiceCollection();
 
-            //services.AddScoped<ProcedureDataLoader>();
-            services.AddTransient<ThreadDataLoader>();
-            //services.AddScoped<PoolDataLoader>();
+            services.AddScoped<ProcedureDataLoader>();
+            services.AddScoped<ThreadDataLoader>();
+            services.AddScoped<PoolDataLoader>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
-            //services.AddTransient<MSSQLContext>();
-            services.AddDbContextFactory<MSSQLContext>(options => 
-                options.UseSqlServer("Data Source=91.219.6.251\\SQLEXPRESS; Initial Catalog=Otus; TrustServerCertificate=True; User Id=otuslogin; Password=1234"), ServiceLifetime.Transient);
+            services.AddTransient<MSSQLContext>();
+            services.AddDbContextFactory<MSSQLContext>(); 
             
             var serviceProvider = services.BuildServiceProvider();
             
             var repo = serviceProvider.GetService<ICustomerRepository>();
-            //var procedureDataLoader = serviceProvider.GetService<ProcedureDataLoader>();
+            var procedureDataLoader = serviceProvider.GetService<ProcedureDataLoader>();
             var threadDataLoader = serviceProvider.GetService<ThreadDataLoader>();
-            //var poolDataLoader = serviceProvider.GetService<PoolDataLoader>();
+            var poolDataLoader = serviceProvider.GetService<PoolDataLoader>();
 
             //Обрабатываем параметры коммандной строки
             if (args != null)
@@ -125,18 +124,17 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             Console.WriteLine();
 
             int cnts;
-            int recCount = customers.Count;
 
             //Наполняем БД, используя метод класса ProcedureDataLoader
-            //stopwatch.Restart();
-            //Console.WriteLine("Working with PROCEDURE");
+            stopwatch.Restart();
+            Console.WriteLine("Working with PROCEDURE");
 
-            //procedureDataLoader.LoadData(customers);
-            //cnts = repo.Count();
-            //Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
-            //stopwatch.Stop();
-            //Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
-            //Console.WriteLine();
+            procedureDataLoader.LoadData(customers);
+            cnts = repo.Count();
+            Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
+            stopwatch.Stop();
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
+            Console.WriteLine();
 
             // Очищаем таблицу
             repo.Clear();
@@ -155,13 +153,14 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             repo.Clear();
 
             // Наполняем БД, используя очередь потоков
-            //stopwatch.Restart();
-            //Console.WriteLine("Working with THREADPOOL");
-            //poolDataLoader.LoadData(customers);
-            //cnts = repo.Count();
-            //Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
-            //stopwatch.Stop();
-            //Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
+            stopwatch.Restart();
+            Console.WriteLine("Working with THREADPOOL");
+            poolDataLoader.threadCount = threadCount;
+            poolDataLoader.LoadData(customers);
+            cnts = repo.Count();
+            Console.WriteLine($"Число записей в таблице (проверка): {cnts}");
+            stopwatch.Stop();
+            Console.WriteLine($"Время(сек): {(int)(stopwatch.ElapsedMilliseconds / 1000)}");
         }
 
         static void GenerateCustomersDataFile()
