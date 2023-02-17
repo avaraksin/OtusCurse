@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
@@ -7,18 +9,19 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 {
     public class CustomerRepository : ICustomerRepository
     {
-        //private readonly SqliteContext _context;
-     
         private readonly IServiceScopeFactory serviceProvider;
+
         public CustomerRepository(IServiceScopeFactory _serviceProvider)
         {
             serviceProvider = _serviceProvider;
         }
 
-    
+        CommonDb currentDbContext =>
+             serviceProvider.CreateScope().ServiceProvider.GetRequiredService<IContext>() as CommonDb;
+               
         public void AddCustomer(ThreadCustomer customer)
         {
-            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
+            using (var _context = currentDbContext)
             {
                 _context.threadcustomers.Add(customer);
                 _context.SaveChanges();
@@ -27,7 +30,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void Clear()
         {
-            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
+            using (var _context = currentDbContext)
             {
                 if (_context.threadcustomers.Count() != 0)
                 {
@@ -42,7 +45,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
         }
         public int Count()
         {
-            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
+            using (var _context = currentDbContext)
             {
                 return _context.threadcustomers.Count();
             }
@@ -50,7 +53,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public void CreateDB()
         {
-            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
+            using (var _context = currentDbContext)
             {
                 if (_context.GetType() == typeof(SqliteContext))
                 {
@@ -61,7 +64,7 @@ namespace Otus.Teaching.Concurrency.Import.DataAccess.Repositories
 
         public string GetDbName()
         {
-            using (var _context = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<MSSQLContext>())
+            using (var _context = currentDbContext)
             {
                 var dbname = _context.GetType().Name;
 

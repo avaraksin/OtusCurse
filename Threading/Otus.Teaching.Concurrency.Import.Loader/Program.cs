@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
@@ -39,8 +40,9 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             services.AddScoped<ThreadDataLoader>();
             services.AddScoped<PoolDataLoader>();
             services.AddTransient<ICustomerRepository, CustomerRepository>();
-            services.AddTransient<MSSQLContext>();
+            
             services.AddDbContextFactory<MSSQLContext>(); 
+            services.AddTransient(typeof(IContext), typeof(MSSQLContext));
             
             var serviceProvider = services.BuildServiceProvider();
             
