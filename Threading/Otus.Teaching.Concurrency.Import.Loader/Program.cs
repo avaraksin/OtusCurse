@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
 using Otus.Teaching.Concurrency.Import.DataAccess.Parsers;
@@ -76,7 +73,7 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             AppSetting app = new AppSetting();
             int threadCount = app.recordsPerThread;
             threadDataLoader.threadCount = threadCount;
-            //poolDataLoader.threadCount = threadCount;
+            poolDataLoader.threadCount = threadCount;
             Console.WriteLine($"Количество обрабатываемых записей в потоке: {app.recordsPerThread}");
             Console.WriteLine();
 
@@ -117,7 +114,6 @@ namespace Otus.Teaching.Concurrency.Import.Loader
 
 
             // Создаем таблицу в БД.
-
             repo.CreateDB();
             repo.Clear();
             Console.WriteLine($"База данных: {repo.GetDbName()}");
@@ -155,7 +151,6 @@ namespace Otus.Teaching.Concurrency.Import.Loader
             // Наполняем БД, используя очередь потоков
             stopwatch.Restart();
             Console.WriteLine("Working with THREADPOOL");
-            poolDataLoader.threadCount = threadCount;
             poolDataLoader.LoadData(customers);
             cnts = repo.Count();
             Console.WriteLine($"Число записей в таблице (проверка): {cnts}");

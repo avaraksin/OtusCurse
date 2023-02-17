@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
 using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 using Otus.Teaching.Concurrency.Import.Loader.Loaders;
@@ -36,7 +35,7 @@ namespace Otus.Teaching.Concurrency.Import.Core.Loaders
         /// <param name="customerList">
         /// массив записей
         /// </param>
-        public virtual async void LoadData(List<ThreadCustomer> customerList)
+        public virtual void LoadData(List<ThreadCustomer> customerList)
         {
             Console.WriteLine("Loading data by Threads...");
 

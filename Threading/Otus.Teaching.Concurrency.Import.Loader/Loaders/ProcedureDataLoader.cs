@@ -1,14 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Otus.Teaching.Concurrency.Import.Core.Loaders;
-using Otus.Teaching.Concurrency.Import.DataAccess.Repositories;
 using Otus.Teaching.Concurrency.Import.Handler.Entities;
-using Otus.Teaching.Concurrency.Import.Handler.Repositories;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace Otus.Teaching.Concurrency.Import.Loader.Loaders
 {
