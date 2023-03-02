@@ -3,15 +3,16 @@
     /// <summary>
     /// Создаем начальный массив интов
     /// </summary>
-    public class InitArrow
+    public class InitArray
     {
-        private const int _array = 10000000;
+        private readonly int _arraySize = 10000000;
         public int[] ints { get; }
 
-        public InitArrow() 
+        public InitArray(int arraySize) 
         {
-            ints = new int[_array];
-            for(int i = 0; i < _array; i++)
+            _arraySize = arraySize;
+            ints = new int[_arraySize];
+            for(int i = 0; i < _arraySize; i++)
             {
                 var item = new Random().Next(0, 100000000);
                 ints[i] = item;

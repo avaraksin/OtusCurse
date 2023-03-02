@@ -5,6 +5,6 @@
     /// </summary>
     internal class TaskVar
     {
-        public List<long> list{ get; set; } = new List<long>();
+        public int[] list { get; set; } = new int[0];
     }
 }
