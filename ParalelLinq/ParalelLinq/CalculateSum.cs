@@ -1,6 +1,6 @@
 ﻿namespace ParalelLinq
 {
-    public static class CalculateSum
+    public class CalculateSum
     {
         /// <summary>
         /// Вычмсляем сумму массива в методе.
@@ -28,7 +28,7 @@
             int itemsPerThread = itemsCount / 4;
             int addOne = itemsCount % itemsPerThread == 0 ? 0 : 1;
             int threadsCount = itemsCount / itemsPerThread + addOne;
-            long[] sums = new long[4];
+            long[] sums = new long[itemsCount / itemsPerThread + addOne];
             List<Task> tasks = new ();
 
             int j = 0;
